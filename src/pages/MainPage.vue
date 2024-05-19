@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-center flex-col items-center relative">
-    <p class="absolute activeTextHeader text-9xl top-1 leftToText">МИРАС</p>
+    <p class="absolute activeTextHeader text-9xl top-1 leftToText">ИНАУТЫҢ</p>
     <div class="flex w-full justify-center items-center">
-      <img src="/icons/Card.png" width="180px" class="z-10" />
+      <img src="/icons/Card.png" width="180px" class="z-10 mr-7" />
     </div>
 
     <div
@@ -29,14 +29,103 @@
   </div>
   <div class="flex justify-center flex-col items-center relative mt-10">
     <div class="flex width90 flex-col items-center">
-      <div class="flex justify-between items-center w-full">
-        <p class="text-3xl">С чего начать</p>
-        <p class="flex text-xl items-center text-gray">
-          Смотреть все <ArrowRight class="mx-4" />
-        </p>
-      </div>
-      <div class="flex flex-col">
-        <div v-for="item in userFeed" :key="item.id" class="flex"></div>
+      <div class="flex flex-col justify-center w-full">
+        <div
+          v-for="item in userFeed"
+          :key="item.id"
+          class="flex items-center justify-center flex-col w-3/6 ml-14"
+        >
+          <div class="flex items-center justify-between w-full mb-2">
+            <div class="flex items-center">
+              <div
+                class="flex justify-center w-8 h-8 rounded-full overflow-hidden"
+              >
+                <img src="/icons/ded.png" alt="" />
+              </div>
+              <div class="flex flex-col justify-center ml-2 text-xs">
+                <div class="">{{ item.person.name }}</div>
+                <div class="">{{ filteredData(item.createdAt) }}</div>
+              </div>
+            </div>
+            <div class="flex justify-between">
+              <div
+                class=""
+                v-for="(genre, index) in item.genres"
+                :key="genre.id"
+              >
+                <div
+                  class="px-4 py-2 text-white bg-green rounded-xl text-xs mr-2"
+                  v-if="index < 2"
+                >
+                  #{{ genre }}
+                </div>
+              </div>
+              <SubscribeIcon />
+            </div>
+          </div>
+          <div class="my-2">
+            <div class="text-xs">{{ filteredText(item.text) }}</div>
+            <div
+              class="text-left text-xs activeTextHeader"
+              v-if="item.text.length > 190"
+            >
+              <span class="border-b border-green">Читать далее...</span>
+            </div>
+          </div>
+          <div
+            class="flex items-center flex-col"
+            v-if="item.image || item.video"
+          >
+            <video width="100%" controls class="mr-5 rounded-xl">
+              <source
+                :src="`http://91.186.197.219:8080/` + item.video.split('/')[3]"
+                type="video/mp4"
+              />
+            </video>
+            <div class="flex justify-between px-5">
+              <img
+                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                alt=""
+                class="rounded-xl"
+                width="20%"
+              />
+              <img
+                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                alt=""
+                class="rounded-xl"
+                width="20%"
+              />
+              <img
+                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                alt=""
+                class="rounded-xl"
+                width="20%"
+              />
+              <img
+                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                alt=""
+                class="rounded-xl"
+                width="20%"
+              />
+            </div>
+          </div>
+          <div class="flex justify-between w-full mb-4 mt-2">
+            <div class="flex">
+              <div
+                class="flex items-center px-2 border-2 commentSectionBorder rounded-xl bg-gray color-red text-left cursor-pointer"
+                @click="likeMethod(item.id, item.likes), (item.likes += 1)"
+              >
+                {{ item.likes }}
+                <LikeIcon class="w-4 h-4 color-red cursor-pointer" />
+              </div>
+              <div
+                class="flex items-center justify-center px-2 border-2 commentSectionBorder rounded-xl bg-gray activeTextHeader"
+              >
+                {{ item.comments.length }} <CommentIcon class="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -48,19 +137,47 @@ import { useFeedStore } from "@/store/FeedStore";
 
 import {
   //С чего начать start
-  ArrowRight,
   //с чего начать end
   FilterIcon,
   ArrowsIcon,
   SearchIcon,
   SavedIcon,
+  SubscribeIcon,
   LikeIcon,
+  CommentIcon,
 } from "@/components/UI";
 export default {
   data() {
-    return { authStore: useAuthStore(), feedStore: useFeedStore() };
+    const VUE_FILES_API_URL = `${process.env.VUE_FILES_API_URL}`;
+    return {
+      authStore: useAuthStore(),
+      feedStore: useFeedStore(),
+      VUE_FILES_API_URL,
+    };
   },
-  methods: {},
+  methods: {
+    likeMethod(id, likes) {
+      this.feedStore.setLikeToPost({ id: id, likes: likes });
+      return likes + 1;
+    },
+    filteredData(data) {
+      const postData = data.filter((elem, index) => {
+        return index < 4;
+      });
+      if (postData[1].toString.length) {
+        const newValue = "0" + postData[1];
+        postData[1] = newValue;
+      }
+      return postData.join(",");
+    },
+    filteredText(text) {
+      let newText = "";
+      if (text.length > 190) {
+        newText = text.slice(0, 190);
+      }
+      return newText;
+    },
+  },
   computed: {
     userFeed() {
       return this.feedStore.userFeed;
@@ -68,22 +185,36 @@ export default {
   },
   mounted() {
     this.feedStore.getUserFeed();
+    this.$route.query.lang = "tat";
   },
   name: "MainPage",
   components: {
     //С чего начать start
-    ArrowRight,
     //С чего Начать end
     LikeIcon,
     ArrowsIcon,
     FilterIcon,
     SearchIcon,
     SavedIcon,
+    SubscribeIcon,
+    CommentIcon,
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.color-red {
+  color: #c62f34;
+}
+.bg-gray {
+  background: #f6f6f6;
+}
+.commentSectionBorder {
+  border-color: #5e5e5e4d;
+}
+.border-green {
+  border-color: var(--main-color);
+}
 .w-12 {
   width: 48px !important;
 }

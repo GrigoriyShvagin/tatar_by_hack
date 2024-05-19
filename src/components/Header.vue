@@ -3,7 +3,10 @@
     <div class="width90 flex justify-between items-center py-6">
       <LogoIcon />
       <div class="flex justify-between text-xl">
-        <router-link to="/main">
+        <router-link
+          :to="{ path: '/main', query: { lang: this.$route.query.lang } }"
+          v-if="currentLang == 'tat'"
+        >
           <p
             class="px-2 border-header border-r-2 cursor-pointer"
             @click="currentContent = 'main'"
@@ -12,27 +15,74 @@
             Главная
           </p>
         </router-link>
-        <router-link to="/content">
+        <router-link
+          :to="{ path: '/main', query: { lang: this.$route.query.lang } }"
+          v-else
+        >
+          <p
+            class="px-2 border-header border-r-2 cursor-pointer"
+            @click="currentContent = 'main'"
+            :class="{ activeTextHeader: currentContent == 'main' }"
+          >
+            Главная
+          </p>
+        </router-link>
+        <router-link
+          :to="{
+            path: '/recomendations',
+            query: { lang: this.$route.query.lang },
+          }"
+          v-if="currentLang == 'tat'"
+        >
           <p
             class="px-2 cursor-pointer"
-            @click="currentContent = 'content'"
-            :class="{ activeTextHeader: currentContent == 'content' }"
+            @click="currentContent = 'Recomendations'"
+            :class="{ activeTextHeader: currentContent == 'Recomendations' }"
           >
-            Контент
+            Рекомендации
+          </p>
+        </router-link>
+        <router-link
+          :to="{
+            path: '/recomendations',
+            query: { lang: this.$route.query.lang },
+          }"
+          v-else
+        >
+          <p
+            class="px-2 cursor-pointer"
+            @click="currentContent = 'Recomendations'"
+            :class="{ activeTextHeader: currentContent == 'Recomendations' }"
+          >
+            Рекомендации
           </p>
         </router-link>
       </div>
-      <button
-        type="button"
-        class="bttn"
-        @click="dialogVisible = true"
-        v-if="!isLoggedIn"
-      >
-        Регистрация
-      </button>
-      <router-link v-else :to="`/user/${userInfo?.id}`">
-        <LoginIcon />
-      </router-link>
+      <div class="flex">
+        <TatarLangSvg
+          v-if="currentLang == 'tat'"
+          @click="currentLangMethod('rus')"
+          class="mr-6"
+        />
+        <RusLangIcon v-else @click="currentLangMethod('tat')" class="mr-6" />
+        <button
+          type="button"
+          class="bttn"
+          @click="dialogVisible = true"
+          v-if="!isLoggedIn"
+        >
+          Регистрация
+        </button>
+        <router-link
+          v-else
+          :to="{
+            path: '/user/' + userInfo?.id,
+            query: { lang: this.$route.query.lang },
+          }"
+        >
+          <LoginIcon />
+        </router-link>
+      </div>
       <LoginMenu v-model:show="dialogVisible" />
     </div>
   </div>
@@ -40,12 +90,17 @@
 
 <script>
 import LoginMenu from "./LoginMenu.vue";
-import { LogoIcon, LoginIcon } from "@/components/UI";
+import {
+  LogoIcon,
+  LoginIcon,
+  RusLangIcon,
+  TatarLangSvg,
+} from "@/components/UI";
 import { useAuthStore } from "../store/AuthStore";
 import { useUserStore } from "../store/UserStore";
 export default {
   name: "HeaderSection",
-  components: { LogoIcon, LoginMenu, LoginIcon },
+  components: { LogoIcon, LoginMenu, LoginIcon, TatarLangSvg, RusLangIcon },
   data() {
     return {
       //stores
@@ -53,6 +108,7 @@ export default {
       userStore: useUserStore(),
       //stores
       user: {},
+      currentLang: "tat",
       currentContent: "main",
       dialogVisible: false,
     };
@@ -60,6 +116,11 @@ export default {
   methods: {
     removeItem() {
       localStorage.removeItem("token");
+    },
+    currentLangMethod(str) {
+      this.currentLang = str;
+      this.$router.push({ path: this.$route.path, query: { lang: str } });
+      this.$route.params.lang = str;
     },
     getUserInfo() {
       if (this.isLoggedIn) {
@@ -70,6 +131,9 @@ export default {
   computed: {
     isLoggedIn() {
       return this.authStore.isLoggedIn;
+    },
+    currentLangInfo() {
+      return this.$route.params.lang;
     },
     userInfo() {
       return this.userStore.userInfo;

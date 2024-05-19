@@ -17,5 +17,16 @@ export const useFeedStore = defineStore("feed", {
       this.$state.feed = result.data;
       return result;
     },
+    async setLikeToPost({ id, likes }) {
+      const headers = { Authorization: this.token };
+      const result = await axios.patch(
+        `${VUE_APP_API_URL}/feed/posts/${id}`,
+        {
+          likes: likes + 1,
+        },
+        { headers: headers }
+      );
+      return result;
+    },
   },
 });
