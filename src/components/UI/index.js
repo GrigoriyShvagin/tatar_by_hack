@@ -16,8 +16,10 @@ import AudioIcon from "./icons/AudioIcon.vue";
 import VideoIcon from "./icons/VideoIcon.vue";
 import TatarLangSvg from "./icons/TatarLang.vue";
 import RusLangIcon from "./icons/RusLangIcon.vue";
+import ShareIcon from "./icons/ShareIcon.vue";
 
 export {
+  ShareIcon,
   CameraIcon,
   RusLangIcon,
   SubscribeIcon,

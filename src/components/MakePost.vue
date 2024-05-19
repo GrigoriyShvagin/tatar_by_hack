@@ -33,7 +33,9 @@
       />
       <div class="flex justify-between mt-4">
         <div class="flex items-center">
-          <button class="bttn" @click="onUpload">Отправить</button>
+          <button class="bttn" ref="bttnUpload" @click="onUpload">
+            Отправить
+          </button>
         </div>
       </div>
     </form>
@@ -65,15 +67,22 @@ export default {
       this.fileToUpload = event.target.files[0];
     },
     onUpload() {
-      this.userStore.makeNewPost(this.textContent, this.isTat);
+      this.userStore
+        .makeNewPost(this.textContent, this.textHeader, this.isTat)
+        .then((resp) => {
+          if (resp.status == 200) {
+            this.$refs.bttnUpload.textContent = "Отправлено";
+            this.$refs.bttnUpload.classList.add("uploaded");
+          }
+        });
     },
   },
   computed: {
     isTat() {
       if (this.$route.query.lang == "tat") {
-        return true;
+        return 1;
       } else {
-        return false;
+        return 0;
       }
     },
   },
@@ -81,6 +90,9 @@ export default {
 </script>
 
 <style>
+.uploaded {
+  background: #70c42e !important;
+}
 .border-gray {
   border-color: #5e5e5e4d;
 }

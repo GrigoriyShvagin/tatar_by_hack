@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/pages/MainPage.vue";
 import RecomendationsPage from "@/pages/RecomendationsPage.vue";
 import UserProfile from "@/pages/UserProfile.vue";
+import PostPage from "@/pages/PostPage.vue";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: "/user/:id",
     name: "UserProfile",
     component: UserProfile,
+  },
+  {
+    path: "/post/:id",
+    name: "PostPage",
+    component: PostPage,
   },
 ];
 

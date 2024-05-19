@@ -23,8 +23,17 @@
             class="px-2 border-header border-r-2 cursor-pointer"
             @click="currentContent = 'main'"
             :class="{ activeTextHeader: currentContent == 'main' }"
+            v-if="this.$route.query.lang == 'rus'"
           >
             Главная
+          </p>
+          <p
+            class="px-2 border-header border-r-2 cursor-pointer"
+            @click="currentContent = 'main'"
+            :class="{ activeTextHeader: currentContent == 'main' }"
+            v-else
+          >
+            Баш
           </p>
         </router-link>
         <router-link
@@ -54,7 +63,7 @@
             @click="currentContent = 'Recomendations'"
             :class="{ activeTextHeader: currentContent == 'Recomendations' }"
           >
-            Рекомендации
+            Тәкъдимнәр
           </p>
         </router-link>
       </div>

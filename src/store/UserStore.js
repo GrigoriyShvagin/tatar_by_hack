@@ -38,7 +38,7 @@ export const useUserStore = defineStore("user", {
       this.$state.userInfoStateId = result.data;
       return result;
     },
-    async makeNewPost(text, isTat) {
+    async makeNewPost(text, header, isTat) {
       const genres = ["ANIMALS"];
       const category = "AUTHOR";
       const headers = { Authorization: this.token };
@@ -48,6 +48,7 @@ export const useUserStore = defineStore("user", {
           category: category,
           genres: genres,
           text: text,
+          title: header,
           isTatar: isTat,
         },
         { headers: headers }

@@ -63,14 +63,40 @@
               <SubscribeIcon />
             </div>
           </div>
-          <div class="my-2">
-            <div class="text-xs">{{ filteredText(item.text) }}</div>
-            <div
-              class="text-left text-xs activeTextHeader"
-              v-if="item.text.length > 190"
+          <div
+            class="my-2"
+            v-if="this.$route.query.lang == 'tat' && item.tatarText"
+          >
+            <router-link
+              :to="{
+                path: '/post/' + item.id,
+                query: { lang: this.$route.query.lang },
+              }"
             >
-              <span class="border-b border-green">Читать далее...</span>
-            </div>
+              <div class="text-xs">{{ item.tatarText }}</div>
+              <div
+                class="text-left text-xs activeTextHeader"
+                v-if="item.tatarText?.length > 190"
+              >
+                <span class="border-b border-green">Читать далее...</span>
+              </div>
+            </router-link>
+          </div>
+          <div class="my-2" v-else>
+            <router-link
+              :to="{
+                path: '/post/' + item.id,
+                query: { lang: this.$route.query.lang },
+              }"
+            >
+              <div class="text-xs">{{ item.text.slice(0, 190) }}</div>
+              <div
+                class="text-left text-xs activeTextHeader"
+                v-if="item.text.length > 190"
+              >
+                <span class="border-b border-green">Читать далее...</span>
+              </div>
+            </router-link>
           </div>
           <div
             class="flex items-center flex-col"
@@ -78,19 +104,19 @@
           >
             <video width="100%" controls class="mr-5 rounded-xl">
               <source
-                :src="`http://91.186.197.219:8080/` + item.video.split('/')[3]"
+                :src="`http://91.186.197.219:8080/` + item.video?.split('/')[3]"
                 type="video/mp4"
               />
             </video>
             <div class="flex justify-between px-5">
               <img
-                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                :src="`http://91.186.197.219:8080/` + item.image?.split('/')[3]"
                 alt=""
                 class="rounded-xl"
                 width="20%"
               />
               <img
-                :src="`http://91.186.197.219:8080/` + item.image.split('/')[3]"
+                :src="`http://91.186.197.219:8080/` + item.image?.split('/')[3]"
                 alt=""
                 class="rounded-xl"
                 width="20%"
