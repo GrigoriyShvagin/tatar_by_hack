@@ -211,7 +211,6 @@ export default {
   },
   mounted() {
     this.feedStore.getUserFeed();
-    this.$route.query.lang = "tat";
   },
   name: "MainPage",
   components: {

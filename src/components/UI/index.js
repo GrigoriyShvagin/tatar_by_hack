@@ -17,8 +17,10 @@ import VideoIcon from "./icons/VideoIcon.vue";
 import TatarLangSvg from "./icons/TatarLang.vue";
 import RusLangIcon from "./icons/RusLangIcon.vue";
 import ShareIcon from "./icons/ShareIcon.vue";
+import ArrowRoundLeft from "./icons/ArrowRoundLeft.vue";
 
 export {
+  ArrowRoundLeft,
   ShareIcon,
   CameraIcon,
   RusLangIcon,
